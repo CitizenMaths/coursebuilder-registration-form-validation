@@ -1,0 +1,665 @@
+{% extends 'base_course.html' %}
+
+{% block subtitle %}
+Registration
+{% endblock %}
+
+{% block assets %}
+  {{ super() }}
+  <style type="text/css">
+    form[action='register'] fieldset {
+      margin-bottom: 10px;
+    }
+  </style>
+{% endblock %}
+
+{% block gcb_page_info %}
+  if ('gcbSetPageInfo' in window) {
+    gcbSetPageInfo({
+      'page_type': 'register',
+    });
+  }
+{% endblock %}
+
+{% block top_content %}
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block main_content %}
+
+<div id="gcb-main">
+  <div class="gcb-article tab-content">
+    <div class="gcb-aside">
+
+      <p>
+        {{course_info.reg_form.header_text | safe}}
+      </p>
+
+      <script>
+      var sbmtForm=true;
+      function validateRegform(){
+        sbmtForm=true;  
+     // Validation for Reg. Checklist
+        var reg_chklstLen=$('input[name=reg_chklst]:checked', '#RegForm').length;
+        var chklstCls=document.getElementById('Reg_Chklst').className.replace(" errTxt","");
+        document.getElementById('Reg_Chklst').className=chklstCls;        
+         if(reg_chklstLen==0){
+              document.getElementById('Reg_Chklst').className+=" errTxt";
+             sbmtForm= false; 
+         }
+    
+     //Validation for Given Name
+       var name=document.getElementById('GivenName').value;
+         var NameCls=document.getElementById('givenName').className.replace(" errTxt","");
+       document.getElementById('givenName').className=NameCls;
+       name=name.trim();
+       if(name==""){ 
+         document.getElementById('givenName').className+=" errTxt";
+         sbmtForm= false; 
+       }
+       else{
+         if (name.indexOf('"') >= 0){
+           name=name.replace(/["]+/g, '');
+         }
+         document.getElementById('GivenName').value=name;
+       }
+    // Validation for Family Name  
+       var fmlyname=document.getElementById('FamilyName').value;
+          var fmlyNmeCls=document.getElementById('fmlyName').className.replace(" errTxt","");
+          document.getElementById('fmlyName').className=fmlyNmeCls;  
+         fmlyname=fmlyname.trim(); 
+       if(fmlyname==""){ 
+         document.getElementById('fmlyName').className+=" errTxt";
+         sbmtForm= false; 
+       }
+       else{ 
+         if (fmlyname.indexOf('"') >= 0){
+           fmlyname=fmlyname.replace(/["]+/g, '');
+         }
+         document.getElementById('FamilyName').value=fmlyname;     
+       }
+
+       //validation for email
+       var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+       var mail=document.getElementById('EmailAddress').value;
+       var cfmmail=document.getElementById('ConfirmEmail').value;
+       var NameCls=document.getElementById('Reg_email').className.replace(" errTxt","");
+       document.getElementById('Reg_email').className=NameCls;
+       var ceCls=document.getElementById('Reg_confirmemail').className.replace(" errTxt","");
+       document.getElementById('Reg_confirmemail').className=ceCls;
+       mail=mail.trim();
+       cfmmail=cfmmail.trim();
+
+       if(mail==""|| mail.indexOf("@")==-1 || mail.indexOf("@")>mail.lastIndexOf(".") || !re.test(mail)){ 
+         document.getElementById('Reg_email').className+=" errTxt";
+         sbmtForm= false; 
+       }
+       else{
+         if (mail.indexOf('"') >= 0){
+           mail=mail.replace(/["]+/g, '');
+         }
+         document.getElementById('EmailAddress').value=mail;
+       }
+
+       if (cfmmail.indexOf('"') >= 0){
+         cfmmail=cfmmail.replace(/["]+/g, '');
+       }
+
+       if (mail!=cfmmail || cfmmail=="" || cfmmail.indexOf("@")==-1 || cfmmail.indexOf("@")>cfmmail.lastIndexOf(".") || !re.test(cfmmail)){
+         document.getElementById('Reg_confirmemail').className+=" errTxt";
+         sbmtForm= false;
+       }
+       else{
+         document.getElementById('ConfirmEmail').value=cfmmail;
+       }
+
+   // Validation for Reg. Age
+       var reg_ageLen=$('input[name=age]:checked', '#RegForm').length;
+       var AgeCls=document.getElementById('Reg_Age').className.replace(" errTxt","");
+         document.getElementById('Reg_Age').className=AgeCls;        
+       if(reg_ageLen==0){
+         document.getElementById('Reg_Age').className+=" errTxt";
+         sbmtForm= false; 
+        }
+    
+   // Validation for Reg. Gender
+       var reg_genderLen=$('input[name=gender]:checked', '#RegForm').length;
+       var genderCls=document.getElementById('Reg_gender').className.replace(" errTxt","");
+         document.getElementById('Reg_gender').className=genderCls;        
+       if(reg_genderLen==0){
+         document.getElementById('Reg_gender').className+=" errTxt";
+         sbmtForm= false; 
+        }
+             
+    // Validation for Reg. Location
+        var oloc=document.getElementById('other_location').value;
+        oloc=oloc.trim();
+        if (oloc != ""){
+          if (oloc.indexOf('"') >= 0){
+            oloc=oloc.replace(/["]+/g, '');
+          }
+          document.getElementById('other_location').value=oloc;
+        }
+
+         var reg_locLen=$('input[name=location]:checked', '#RegForm').length;
+        var loctnCls=document.getElementById('Reg_location').className.replace(" errTxt","");
+          document.getElementById('Reg_location').className=loctnCls; 
+          var other_loc=$("#other_location").val();
+          if (other_loc.indexOf('"') >= 0){
+            other_loc=other_loc.replace(/["]+/g, '');
+          }
+          
+          if(reg_locLen==0 && other_loc !=""){
+            $("#other_location").prev().attr('checked',true);           
+            $("#other_location").prev().attr('value',other_loc);  
+          }  
+          
+          var locstr1=$('input[name=location]:checked', '#RegForm').attr('value');
+          if(locstr1=="")$('input[name=location]:checked', '#RegForm').attr('value',other_loc);
+          locstr1=$('input[name=location]:checked', '#RegForm').attr('value');
+          reg_locLen=$('input[name=location]:checked', '#RegForm').length;
+        if(reg_locLen==0 || locstr1==""){    
+          document.getElementById('Reg_location').className+=" errTxt";
+          sbmtForm= false; 
+         }
+
+        var postcode=document.getElementById('other_ulocation').value;
+        postcode=postcode.trim();
+        if (postcode != ""){
+          if (postcode.indexOf('"') >= 0){
+           postcode=postcode.replace(/["]+/g, '');
+          }
+          document.getElementById('other_ulocation').value=postcode;
+        }
+        
+     // Validation for Reg. learner_type
+         var reg_lrnrLen=$('input[name=learner_type]:checked', '#RegForm').length;
+         var lrnrCls=document.getElementById('Reg_learntype').className.replace(" errTxt","");
+           document.getElementById('Reg_learntype').className=lrnrCls;        
+         if(reg_lrnrLen==0){
+           document.getElementById('Reg_learntype').className+=" errTxt";
+           sbmtForm= false; 
+          }   
+         
+   // Validation for Reg. Learner Goal
+           var reg_lrnrgLen=$('input[name=learner_goal]:checked', '#RegForm').length;
+          var lngCls=document.getElementById('Reg_goal').className.replace(" errTxt","");
+            document.getElementById('Reg_goal').className=lngCls;              
+            var other_gl=$("#other_goal").val();
+            if(reg_lrnrgLen==0 && other_gl !=""){
+              $("#other_goal").prev().attr('checked',true);           
+              $("#other_goal").prev().attr('value',other_gl);  
+            }  
+            
+            var lngstr1=$('input[name=learner_goal]:checked', '#RegForm').attr('value');
+            if(lngstr1=="")$('input[name=learner_goal]:checked', '#RegForm').attr('value',other_gl);
+            lngstr1=$('input[name=learner_goal]:checked', '#RegForm').attr('value');
+            reg_lrnrgLen=$('input[name=learner_goal]:checked', '#RegForm').length;
+          if(reg_lrnrgLen==0 || lngstr1==""){    
+            document.getElementById('Reg_goal').className+=" errTxt";
+            sbmtForm= false; 
+           }
+    
+         // Validation for Reg. highest educational qualification
+         var reg_eduLen=$('input[name=eduQlfctn]:checked', '#RegForm').length;
+         var eduCls=document.getElementById('Reg_eduQlfctn').className.replace(" errTxt","");
+           document.getElementById('Reg_eduQlfctn').className=eduCls;        
+         if(reg_eduLen==0){
+           document.getElementById('Reg_eduQlfctn').className+=" errTxt";
+           sbmtForm= false; 
+          }
+        // Validation for Reg. maths qualification
+         var reg_mthLen=$('input[name=mathQlfctn]:checked', '#RegForm').length;
+         var MthCls=document.getElementById('Reg_mathQlfctn').className.replace(" errTxt","");
+           document.getElementById('Reg_mathQlfctn').className=MthCls;        
+         if(reg_mthLen==0){
+           document.getElementById('Reg_mathQlfctn').className+=" errTxt";
+           sbmtForm= false; 
+          }
+          
+  // Validation for Reg. ContctByMail
+         var reg_CntctMailLen=$('input[name=ContctByMail]:checked', '#RegForm').length;
+         var CntctMailCls=document.getElementById('Reg_ContctByMail').className.replace(" errTxt","");
+           document.getElementById('Reg_ContctByMail').className=CntctMailCls;        
+         if(reg_CntctMailLen==0){
+           document.getElementById('Reg_ContctByMail').className+=" errTxt";
+           sbmtForm= false; 
+          }
+         
+    // Validation for Reg. SendMail
+         var reg_sendMailLen=$('input[name=SendMail]:checked', '#RegForm').length;
+         var sendMailCls=document.getElementById('Reg_SendMail').className.replace(" errTxt","");
+           document.getElementById('Reg_SendMail').className=sendMailCls;        
+         if(reg_sendMailLen==0){
+           document.getElementById('Reg_SendMail').className+=" errTxt";
+           sbmtForm= false; 
+          }   
+
+    // Validate learner_inst
+     var reg_learner_inst_len=$('input[name=learner_inst]:checked', '#RegForm').length;
+     var learner_inst_Cls=document.getElementById('Reg_learner_inst').className.replace(" errTxt","");
+     document.getElementById('Reg_learner_inst').className=learner_inst_Cls;        
+     if(reg_learner_inst_len==0){
+       document.getElementById('Reg_learner_inst').className+=" errTxt";
+       sbmtForm= false; 
+     }
+
+     var ais = document.getElementsByName('li_additional_info');
+     var i;
+     for (i = 0; i < ais.length; i++){
+       var ai_val = ais[i].value;
+       ai_val=ai_val.trim();
+       if (ai_val != ""){
+         if (ai_val.indexOf('"') >= 0){
+           ai_val=ai_val.replace(/["]+/g, '');
+         }
+         ais[i].value = ai_val;
+       }
+     }
+
+    // Validate sharing
+     var reg_dontshare_len=$('input[name=learner_privacy]:checked', '#RegForm').length;
+     var Reg_lp_dontshare_Cls=document.getElementById('Reg_lp_dontshare').className.replace(" errTxt","");
+     document.getElementById('Reg_lp_dontshare').className=Reg_lp_dontshare_Cls;        
+     if(reg_dontshare_len==0){
+       document.getElementById('Reg_lp_dontshare').className+=" errTxt";
+       sbmtForm= false; 
+     }
+
+    // Validate sharing
+     var reg_maillist_len=$('input[name=MailList]:checked', '#RegForm').length;
+     var Reg_MailListCls=document.getElementById('Reg_MailList').className.replace(" errTxt","");
+     document.getElementById('Reg_MailList').className=Reg_MailListCls;        
+     if(reg_maillist_len==0){
+       document.getElementById('Reg_MailList').className+=" errTxt";
+       sbmtForm= false; 
+     }
+
+  if(sbmtForm)
+    document.getElementById("RegForm").submit();  
+    else
+      {
+      $("#Err_Msg").show();
+      alert("Please scroll up to check that you have fully completed the form, and then click on the Register button again.");
+      return false;   
+      }
+                     
+      }
+     
+      </script>
+       <div class="reg_heading" id="reg_title" >Registration Form</div>  
+
+
+      {% if alternate_content %}
+        {% for item in alternate_content %}
+          {{ item }}
+        {% endfor %}
+      {% else %}
+        <form id="RegForm" action="register" method='post'>
+          <input
+             type="hidden"
+             name="xsrf_token"
+             value="{{ register_xsrf_token|escape }}">
+          <fieldset>
+
+
+            <!-- II: this is ***Horrible*** there is css added to the site to style the divs in the additional fields
+                 html - but that styling doesn't take account of the ol element, or adopt the idioms of the framework.
+                 At this stage, I dare not change the styling, but at some point it should be sorted -->
+
+
+<!--Preliminaries - last updated after SMOG testing by Seb Schmoller, 17/8/2014-->
+            <ol>
+
+<div style="font-size: 10pt; margin-left: 10px;" class="yui-wk-div">  
+  <p>Thank you for choosing to do Citizen Maths.</p> 
+  <p>Nearly there now. Please tell us about yourself. </p>
+  <p>We will use what you and others who join the course tell us for two things. <strong>First</strong>, it will help us judge the impact of the course. <strong>Second</strong>, it will help us to improve Citizen Maths for users in the future.</p><p>We will look after the data you give us with great care.&nbsp; We will:</p>
+
+  <ol>
+    <li>only use what you tell us to help improve the course;</li>
+    <li>not share what you tell us outside the group of partners that are running the course;</li>
+    <li>never give or sell your data to anyone.</li>
+  </ol>
+
+  <p>If you click on the "Register" button at the end of this form you will show that you accept our Terms of Use and our Privacy Policy. You will be able to review both before you sign up.</p>
+
+  <p>Please note that all questions marked with a red <span style="color: rgb(255, 0, 0);" tag="span" class="yui-tag-span yui-tag">*</span> require a response.</p>
+
+</div>
+
+<!--Routine to push users via the precourse self assessment before they register-->
+<div class="reg_heading yui-wk-div"><span class="yui-tag-span yui-tag" tag="span" style="color: rgb(255, 0, 0);">* </span>Did you <span id="Reg_Chklst"><strong>fill in the "Get started checklist" before starting to fill in this form?</strong></span></div>
+
+<div class="reg_li_div yui-wk-div">
+  <input id="reg_chklst" name="reg_chklst" value="Yes" type="radio"/>Yes
+</div>
+
+<div class="reg_li_div yui-wk-div">
+  <input id="reg_chklst" name="reg_chklst" value="Not sure" type="radio"/>No, or not sure
+</div>
+
+<!--<div class="reg_li_div yui-wk-div" style="margin-bottom: 15px;padding-left: 10px;padding-bottom: 10px;padding-top: 10px;">(If you did not, or you are not sure, please <a href="http://goo.gl/f9SSha" style="color:#0098fe;">click on this link to complete the checklist now</a>.)</div>-->
+<div class="reg_li_div yui-wk-div" style="margin-bottom: 15px;padding-left: 10px;padding-bottom: 10px;padding-top: 10px;">(If you would like to, please <a href="http://goo.gl/f9SSha" style="color:#0098fe;">click on this link to complete the checklist now</a>.)</div>
+
+<!--Name information-->
+
+<div class="reg_li_div yui-wk-div" style="padding-left:10px; overflow: auto;">
+  <div style="float: left; display: block; width: 60%;">
+    <span style="color: rgb(255, 0, 0); line-height: 1.22;">*</span><span style="color: rgb(255, 0, 0); line-height: 1.22;">&nbsp;</span>Please enter your
+    <label for="GivenName" id="givenName"><strong>given (or first) name</strong>: &nbsp;</label>
+    <input id="GivenName" name="GivenName" class="gcb-reg-txtbox" maxlength="40" type="textbox"/>,
+    <br/>
+     and your
+    <label for="FamilyName" id="fmlyName"><strong>family name</strong>: &nbsp;</label>
+    <input id="FamilyName" name="FamilyName" class="gcb-reg-txtbox" maxlength="40" type="textbox"/>.
+  </div>
+  <div style="display: block; float: right; padding: 5px; width: 35%; background-color: #fce5cd;">
+    Note that this information will appear on your Certificate of Participation, available to you when you complete Citizen Maths.
+  </div>
+</div>
+
+<br/>
+
+<div class="reg_li_div yui-wk-div" style="padding-left:10px;"><span style="color: rgb(255, 0, 0); line-height: 1.22;">*</span><span style="color: rgb(255, 0, 0); line-height: 1.22;">&nbsp;</span>In case we need to get in touch with you, please enter (with care!) your
+
+  <label for="EmailAddress" id="Reg_email"><strong>main email address</strong>: &nbsp;</label>
+  <input id="EmailAddress" name="EmailAddress" class="gcb-reg-txtbox" maxlength="60" type="textbox"/>,
+  <label for="ConfirmEmail" id="Reg_confirmemail">and please <strong>confirm</strong> your email address here: &nbsp;</label>
+  <input id="ConfirmEmail" name="ConfirmEmail" class="gcb-reg-txtbox" maxlength="60" type="textbox"/>.
+</div>
+
+<br/>
+
+<div class="reg_heading yui-wk-div" style="overflow: auto;">
+  <div style="float: left; display: block;">
+    <span style="color: rgb(255, 0, 0); line-height: 1.22;">*</span><span style="color: rgb(255, 0, 0); line-height: 1.22;">&nbsp;</span>Please tell us your <span id="Reg_Age"><strong>age</strong></span>.
+  </div>
+  <div style="display: block; float: right; padding: 5px; font-size: 11pt; line-height: 1.22; background-color: #fce5cd;">Note that Citizen Maths is for those aged 16 or more.</div>
+</div>
+
+<div class="reg_li_div yui-wk-div">
+  <input name="age" id="age" value="16-19" type="radio"/>16-19&nbsp;&nbsp;|&nbsp;
+  <input name="age" id="age" value="20-23" type="radio"/>20-23&nbsp;&nbsp;|&nbsp;
+  <input name="age" id="age" value="24-29" type="radio"/>24-29&nbsp;&nbsp;|&nbsp;
+  <input name="age" id="age" value="30-39" type="radio"/>30-39&nbsp;&nbsp;|&nbsp;
+  <input name="age" id="age" value="40-49" type="radio"/>40-49&nbsp;&nbsp;|&nbsp;
+  <input name="age" id="age" value="50-59" type="radio"/>50-59&nbsp;&nbsp;|&nbsp;
+  <input name="age" id="age" value="60-69" type="radio"/>60-69&nbsp;&nbsp;|&nbsp;
+  <input name="age" id="age" value="70 or more" type="radio"/>70 or over
+</div>
+
+<br/>
+
+<div class="reg_heading yui-wk-div"><span style="color: rgb(255, 0, 0); line-height: 1.22;">*</span><span style="color: rgb(255, 0, 0); line-height: 1.22;">&nbsp;</span>What is your <span id="Reg_gender"><strong>gender</strong>?</span></div>
+
+<div class="reg_li_div yui-wk-div">
+  <input name="gender" id="gender" value="Female" type="radio"/>Female&nbsp;&nbsp;|&nbsp;
+  <input name="gender" id="gender" value="Male" type="radio"/>Male&nbsp;&nbsp;|&nbsp;
+  <input name="gender" id="gender" value="Prefer not to say" type="radio"/>Prefer not to say
+</div>
+
+<br/>
+
+<div class="reg_heading yui-wk-div"><span style="color: rgb(255, 0, 0); line-height: 1.22;">*</span><span style="color: rgb(255, 0, 0); line-height: 1.22;">&nbsp;</span>Please tell us where you <span id="Reg_location"><strong>mainly live</strong></span>.</div>
+
+<div class="reg_li_div yui-wk-div">
+  <input name="location" id="location" value="England" type="radio"/>England&nbsp;&nbsp;|&nbsp;
+  <input name="location" id="location" value="Northern Ireland" type="radio"/>Northern Ireland &nbsp;&nbsp;|&nbsp;
+  <input name="location" id="location" value="Scotland" type="radio"/>Scotland&nbsp;&nbsp;|&nbsp;
+  <input name="location" id="location" value="Wales" type="radio"/>Wales&nbsp;&nbsp;|&nbsp;
+  <input name="location" id="location" value="Eire" type="radio"/>Eire&nbsp;&nbsp;|&nbsp;
+  <input name="location" id="location" value="Europe outside the UK and Eire" type="radio"/>Europe outside the UK and Eire&nbsp;&nbsp;|&nbsp;<br/>
+  <input name="location" id="location" value="Australasia" type="radio"/>Australasia&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <input name="location" id="location" value="India" type="radio"/>India&nbsp;&nbsp;|&nbsp;
+  <input name="location" id="location" value="; USA or Canada" type="radio"/>USA or Canada&nbsp;&nbsp;|&nbsp;
+  <input name="location" id="location" value="" type="radio"/>Other (in which case please tell us:)&nbsp;&nbsp;&nbsp;<input id="other_location" maxlength="150" type="text"/>.
+</div>
+
+<div class="reg_li_div yui-wk-div" style="overflow: auto;">
+  <div style="float: left; display: block; width: 50%;">
+    <!--input name="location" id="location" value="" type="radio"/>Other (in which case please tell us:)&nbsp;&nbsp;&nbsp;<input id="other_location" maxlength="150" type="text"/>.-->
+    <br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If you are UK-based, please enter, if you wish, the first part of your post-code: &nbsp;<input id="other_ulocation" class="gcb-reg-txtbox" name="other_ulocation" maxlength="12" type="textbox"/>.
+
+    <br/>
+  </div>
+  <div style="display: block; float: right; padding: 5px; font-size: 11pt; width: 45%; background-color: #fce5cd;">
+    Note that the first part of a UK post-code is the letters and numbers <strong>before</strong> the space, for example: DN11, EH2, S8, WC1E. 
+    <br/>
+    This will help us better understand the uptake of Citizen Maths in the UK.
+  </div>
+</div>
+
+
+<br/>
+
+<div class="reg_heading yui-wk-div" style="overflow: auto;">
+  <div style="float: left; display: block;">
+    <span style="color: rgb(255, 0, 0); line-height: 1.22;">*</span><span style="color: rgb(255, 0, 0); line-height: 1.22;">&nbsp;</span>Which if any of the statements below <span id="Reg_learntype"><strong>are true for you</strong></span>?
+  </div>
+  <div style="display: block; float: right; padding: 5px; font-size: 11pt; line-height: 1.22; background-color: #fce5cd;">Please select all that apply in your case.</div>
+</div>
+
+<div class="reg_li_div yui-wk-div"><input name="learner_type" id="learner_type" value="learner_type_1" type="checkbox"/>I want to "brush up" my maths.  </div>
+<div class="reg_li_div yui-wk-div"><input name="learner_type" id="learner_type" value="learner_type_2" type="checkbox"/>I struggled with maths in the past and want to do something about it.  </div>
+<div class="reg_li_div yui-wk-div"><input name="learner_type" id="learner_type" value="learner_type_3" type="checkbox"/>I am a parent. I want to support my kids with their maths.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_type" id="learner_type" value="learner_type_4" type="checkbox"/>I am a lifelong learner.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_type" id="learner_type" value="learner_type_5" type="checkbox"/>I was told about this by my employer.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_type" id="learner_type" value="learner_type_6" type="checkbox"/>I was told about this by a teacher or tutor.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_type" id="learner_type" value="learner_type_7" type="checkbox"/>I was told about this by a parent or carer.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_type" id="learner_type" value="learner_type_8" type="checkbox"/>I was told about this by a union learning rep (ULR) or by my union.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_type" id="learner_type" value="learner_type_9" type="checkbox"/>I am learning maths at school or college and I want to do some extra study.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_type" id="learner_type" value="learner_type_10" type="checkbox"/>I want to learn at my own pace.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_type" id="learner_type" value="learner_type_11" type="checkbox"/>My role is to help people who struggle with maths.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_type" id="learner_type" value="learner_type_12" type="checkbox"/>I am interested in maths education.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_type" id="learner_type" value="learner_type_13" type="checkbox"/>I have a work interest in online learning.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_type" id="learner_type" value="learner_type_14" type="checkbox"/>I found Citizen Maths using a search engine (Google, Bing, Yahoo etc).</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_type" id="learner_type" value="learner_type_15" type="checkbox"/>I found out about Citizen Maths from a TUC eNote.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_type" id="learner_type" value="learner_type_16" type="checkbox"/>I found out about Citizen Maths from a video about Citizen Maths.</div>
+
+<br/>
+
+<div class="reg_heading yui-wk-div" style="overflow: auto;">
+  <div style="float: left; display: block;">
+    <span style="color: rgb(255, 0, 0); line-height: 1.22;">*</span><span style="color: rgb(255, 0, 0); line-height: 1.22;">&nbsp;</span>What is <span id="Reg_goal"><strong>your main goal</strong></span>?
+  </div>
+  <div style="display: block; float: right; padding: 5px; font-size: 11pt; line-height: 1.22; background-color: #fce5cd;">Please choose the one that <b>fits you most closely at the moment</b>.</div>
+</div>
+
+<div class="reg_li_div yui-wk-div"><input name="learner_goal" id="learner_goal" value="learner_goal_1" type="radio"/>I intend to work through the whole course, to improve my maths.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_goal" id="learner_goal" value="learner_goal_2" type="radio"/>I want to look at the course to find out if it will suit me.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_goal" id="learner_goal" value="learner_goal_3" type="radio"/>I want to find out how this course is run. I am not here to improve my maths.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_goal" id="learner_goal" value="learner_goal_4" type="radio"/>I want to look at the course to find out if it could be of use to my students.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_goal" id="learner_goal" value="learner_goal_5" type="radio"/>I want to look at the course to find out if it could be of use to people in my organisation.</div>
+<!--  a radio button followed by "Other." is needed here. In the next line I offer the HTML for this.
+<div class="reg_li_div yui-wk-div"><input name="learner_goal" id="learner_goal" value="learner_goal_6" type="radio"/>Other.</div>
+-->
+<br/>
+
+<!--Asks for learner's educational level. NB I've not changed the name or id or values, but the use or "priority" looks wrong to me-->
+
+<div class="reg_heading yui-wk-div">Next we ask you about your prior qualifications in any subject. Do not worry if you are not sure or if you do not remember. Just check the first option and move on.
+  <br/>
+  <br/>
+  <span style="color: rgb(255, 0, 0);">*&nbsp;</span>Which of the following best describes the level of your <span id="Reg_eduQlfctn"><strong>highest qualification (in any subject)</strong></span>?
+</div>
+
+<div class="reg_li_div yui-wk-div"><input name="eduQlfctn" id="eduQlfctn" value="eduQlfctn_2" type="radio"/>Not sure / can't remember.</div>
+<div class="reg_li_div yui-wk-div"><input name="eduQlfctn" id="eduQlfctn" value="eduQlfctn_1" type="radio"/>None.</div>
+<div class="reg_li_div yui-wk-div"><input name="eduQlfctn" id="eduQlfctn" value="eduQlfctn_3" type="radio"/>Entry level.</div>
+<div class="reg_li_div yui-wk-div"><input name="eduQlfctn" id="eduQlfctn" value="eduQlfctn_4" type="radio"/>Level 1 such as GCSE / 'O' Level D-F / NVQ or GNVQ Level 1 (Foundation).</div>
+<div class="reg_li_div yui-wk-div"><input name="eduQlfctn" id="eduQlfctn" value="eduQlfctn_5" type="radio"/>Level 2 such as GCSE / 'O' Level A*-C / NVQ or GNVQ Level 2 (Intermediate).</div>
+<div class="reg_li_div yui-wk-div"><input name="eduQlfctn" id="eduQlfctn" value="eduQlfctn_6" type="radio"/>Level 3 such as A/AS Level / NVQ or GNVQ Level 3 (Advanced) / National Certificate / Diploma.</div>
+<div class="reg_li_div yui-wk-div"><input name="eduQlfctn" id="eduQlfctn" value="eduQlfctn_7" type="radio"/>Level 4/5 such as Foundation degree / Higher National Certificate / Diploma.</div>
+<div class="reg_li_div yui-wk-div"><input name="eduQlfctn" id="eduQlfctn" value="eduQlfctn_8" type="radio"/>Level 6/7 or above such as Bachelor or&nbsp; Post Graduate Degree.</div>
+
+<br/>
+
+
+
+<!--Asks for learner's mathematical level. NB I've not changed the name or id or values, but the use or "priority" looks wrong to me, not least because it duplicates that used in the previous section of the registration form-->
+
+
+
+<div class="reg_heading yui-wk-div">Now we ask you about your prior qualifications in maths. Do not worry if you are not sure or if you do not remember. Just check the first option and move on.
+  <br/>
+  <br/>
+  <span style="color: rgb(255, 0, 0);">*&nbsp;</span>Which of the following best describes the level of your <span id="Reg_mathQlfctn"><strong>highest qualification in mathematics/numeracy</strong></span>?
+</div>
+
+<div class="reg_li_div yui-wk-div"><input name="mathQlfctn" id="mathQlfctn" value="mathQlfctn_2" type="radio"/>Not sure / can't remember.</div>
+<div class="reg_li_div yui-wk-div"><input name="mathQlfctn" id="mathQlfctn" value="mathQlfctn_1" type="radio"/>None.</div>
+<div class="reg_li_div yui-wk-div"><input name="mathQlfctn" id="mathQlfctn" value="mathQlfctn_3" type="radio"/>Entry level.</div>
+<div class="reg_li_div yui-wk-div"><input name="mathQlfctn" id="mathQlfctn" value="mathQlfctn_4" type="radio"/>Level 1 such as GCSE / 'O' Level D-G / Key Skills / Functional Skills / Adult Skills Level 1.</div>
+<div class="reg_li_div yui-wk-div"><input name="mathQlfctn" id="mathQlfctn" value="mathQlfctn_5" type="radio"/>Level 2 such as GCSE / 'O' Level A*-C / Key Skills / Functional Skills / Adult Skills 
+Level 2.</div>
+<div class="reg_li_div yui-wk-div"><input name="mathQlfctn" id="mathQlfctn" value="mathQlfctn_6" type="radio"/>Level 3 and above including A/AS Level and Degrees, in science, technology, engineering or maths (STEM) subjects.</div>
+<div class="reg_li_div yui-wk-div"><input name="mathQlfctn" id="mathQlfctn" value="mathQlfctn_7" type="radio"/>Other.</div>
+
+<br/>
+
+<div class="reg_heading yui-wk-div" style="overflow: auto;">
+  <div style="float: left; display: block; width: 50%;">
+    <span style="color: rgb(255, 0, 0); line-height: 1.22;">*</span>
+    <span style="color: rgb(255, 0, 0); line-height: 1.22;">&nbsp;</span>
+    <span id="Reg_SendMail">Do you want us to send you encouraging emails about your progress with Citizen Maths?</span>
+    <br/>
+    <span style="background-color: #F1F1F1;padding: 5px 15px 5px 15px;">
+      <input name="SendMail" style="margin-right:15px;" id="SendMail" value="Yes" type="radio"/>Yes, that's fine&nbsp;&nbsp;|&nbsp;
+      <input name="SendMail" style="margin-right:15px;" id="SendMail" value="No thanks" type="radio"/>No thanks
+    </span>
+  </div>
+  <div style="display: block; float: right; padding: 5px; font-size: 11pt; width: 45%; background-color: #fce5cd;">
+    These emails will be sent at most twice a week. They will <strong>help you stick with Citizen Maths until you’ve completed it</strong>. (You will be able to unsubscribe from this service if it turns out not to be of value to you.)
+  </div>
+</div>
+
+<br/>
+
+<div class="reg_heading yui-wk-div" style="overflow: hidden;">
+  <div style="float: left; display: block; width: 50%;">
+    <span style="color: rgb(255, 0, 0); line-height: 1.22;">*</span>
+    <span style="color: rgb(255, 0, 0); line-height: 1.22;">&nbsp;</span>Can we get in touch by email
+    <span id="Reg_ContctByMail">
+      <strong>to ask you for your views about Citizen Maths</strong>
+    </span>?
+    <br/>
+    <span style="background-color: #F1F1F1;padding: 5px 15px 5px 15px;">
+      <input name="ContctByMail" style="margin-right:15px;" id="contctbymail" value="Yes" type="radio"/>Yes, that's fine&nbsp;&nbsp;|&nbsp;
+      <input name="ContctByMail" style="margin-right:15px;" id="contctbymail" value="No thanks" type="radio"/>No thanks
+    </span>
+  </div>
+  <div style="display: block; float: right; padding: 5px; font-size: 11pt; width: 45%; background-color: #fce5cd;">
+    We will not send such emails often - perhaps once or twice every three or four months.
+  </div>
+</div>
+
+<br/>
+
+<div class="reg_heading yui-wk-div" style="overflow: auto;">
+  <div style="float: left; display: block; width: 50%;">
+    <span style="color: rgb(255, 0, 0); line-height: 1.22;">*</span>
+    <span style="color: rgb(255, 0, 0); line-height: 1.22;">&nbsp;</span>
+    <span id="Reg_MailList">Can we add your main email address to an "email announcement list"?</span>
+    <br/>
+    <span style="background-color: #F1F1F1;padding: 5px 15px 5px 15px;"><input name="MailList" id="MailList" value="Yes" style="margin-right:15px;" type="radio"/>Yes, that's fine&nbsp;&nbsp;|&nbsp;
+    <input name="MailList" id="MailList" value="No thanks" style="margin-right:15px;" type="radio"/>No thanks</span>
+  </div>
+  <div style="display: block; float: right; padding: 5px; font-size: 11pt; width: 45%; background-color: #fce5cd;">
+    We will use this sparingly, and <strong>only</strong> for the purposes of sending you messages relating to the running of the Citizen Maths. (You will be able to unsubscribe from this service if you wish.)
+  </div>
+</div>
+
+<br/>
+
+<div class="reg_heading yui-wk-div">
+  <span style="color: rgb(255, 0, 0); line-height: 1.22;">*</span>
+  <span id="Reg_learner_inst">And finally, Citizen Maths has been collaborating with a number of organisations, some of which are encouraging people to try the course. If this applies in your case, please select from the list of organisations below. If you do not wish to say, or if none of the organisations listed applies, please select "Don't wish to say / None of the above".</span>
+</div>
+
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_scottish_fe" type="radio"/>A Scottish Further Education College,
+  in which case please state the name of the college here
+  :&nbsp;<input name="li_additional_info" id="li_additional_info" maxlength="150" type="text"/></div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_celewisham" type="radio"/>Adult Learning Lewisham.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_atl" type="radio"/>ATL.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_banbuy" type="radio"/>Banbury & Bicester College.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_barkingdagenham" type="radio"/>Barking and Dagenham College.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_calderdale" type="radio"/>Calderdale College.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_ccnorwich" type="radio"/>City College Norwich.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_evolvehousing" type="radio"/>Evolve Housing + Support.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_haringeyals" type="radio"/>Haringey Adult Learning Service.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_havering" type="radio"/>Havering College.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_hertfordreg" type="radio"/>Hertford Regional College.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_hull" type="radio"/>Hull College.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_leedscc" type="radio"/>Leeds City College.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_loughborough" type="radio"/>Loughborough College.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_middlesbrough" type="radio"/>Middlesbrough College.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_morley" type="radio"/>Morley College.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_nationalNumeracy" type="radio"/>National Numeracy.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_procat" type="radio"/>PROCAT.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_richmond" type="radio"/>Richmond upon Thames College.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_rmt" type="radio"/>RMT.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_sthft" type="radio"/>Sheffield Teaching Hospitals Foundation Trust.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_serc" type="radio"/>South Eastern Regional College.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_stockport" type="radio"/>Stockport College.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_stoke" type="radio"/>Stoke College.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_t2000" type="radio"/>T2000.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_army" type="radio"/>The Army.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_britschool" type="radio"/>The BRIT School, Croydon.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_cityliverpool" type="radio"/>The City of Liverpool College.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_sheffieldcollege" type="radio"/>The Sheffield College.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_sourcemh" type="radio"/>The Source at Meadowhall.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_tinder" type="radio"/>Tinder Foundation/UK Online.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_tuc" type="radio"/>TUC Education,
+  in which case please state as best you can the name of the trade union studies centre where you learned about Citizen Maths:
+  &nbsp;<input name="li_additional_info" id="li_additional_info" maxlength="150" type="text"/></div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_unionlearn" type="radio"/>unionlearn and/or the Union Learning Fund,
+  in which case please state the name of the project here as best you can
+  :&nbsp;<input name="li_additional_info" id="li_additional_info" maxlength="150" type="text"/></div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_unison" type="radio"/>UNISON.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_ougreenwich" type="radio"/>University of Greenwich.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_westherts" type="radio"/>West Herts College.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_inst" id="learner_inst" value="li_none" type="radio"/>Don't wish to say / None of the above.</div>
+
+<br/>
+
+<div class="reg_heading yui-wk-div">
+  <span style="color: rgb(255, 0, 0); line-height: 1.22;">*</span>
+  <span id="Reg_lp_dontshare">Are you willing for data about your use of Citizen Maths to be <strong>shared with the organisation (if any) that you selected above?</strong></span>
+</div>
+
+<div class="reg_li_div yui-wk-div"><input name="learner_privacy" id="learner_privacy" value="lp_dontshare" type="radio"/><strong>Do not share any data</strong> about my use of Citizen Maths with the organisation selected above (if any).</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_privacy" id="learner_privacy" value="lp_anonymise" type="radio"/>I agree to you <strong>sharing anonymised data</strong> about my use of Citizen Maths with the organisation selected above (if any). Anonymised means that no one can link your data back to you personally.</div>
+<div class="reg_li_div yui-wk-div"><input name="learner_privacy" id="learner_privacy" value="lp_oktoshare" type="radio"/>I agree to you <strong>sharing data about my own use of Citizen Maths</strong> with the organisation selected above (if any).</div>
+
+<br/>
+
+<!--Explains the consequences of sigining up and gives access to the TOC and the Privacy Policy-->
+
+<div class="reg_heading yui-wk-div" id="reg_trms_prvcy">By pressing the "Register" button you accept the Citizen Maths <a href="http://citizenmaths.com/terms-of-use/" style="color:#0098fe;" target="_blank">Terms of Use</a> and <a href="http://citizenmaths.com/privacy-policy/" style="color:#0098fe;" target="_blank">Privacy Policy</a>. You can click on the links to read them. (Both open in a new window or tab, in a printable 
+format.) </div>
+
+
+
+              {% if course_info.reg_form.additional_registration_fields %}
+                {{course_info.reg_form.additional_registration_fields | safe}}
+              {% else %}
+                <!-- reg_form.additional_registration_fields -->
+              {% endif %}
+            </ol>
+          </fieldset>
+
+
+          <button class="gcb-button" onclick="return validateRegform();">
+            {# I18N: Button at the end of the registration form for a course. #}
+            {{ gettext('Register') }}
+          </button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
